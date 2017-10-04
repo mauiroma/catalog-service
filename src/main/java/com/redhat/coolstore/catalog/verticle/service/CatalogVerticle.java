@@ -1,10 +1,11 @@
 package com.redhat.coolstore.catalog.verticle.service;
 
-import java.util.Optional;
-
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.ext.mongo.MongoClient;
+import io.vertx.serviceproxy.ProxyHelper;
+
+import java.util.Optional;
 
 public class CatalogVerticle extends AbstractVerticle {
     
@@ -20,6 +21,11 @@ public class CatalogVerticle extends AbstractVerticle {
         // * Register the service on the event bus
         // * Complete the future
         //----
+        CatalogService catalogService = new CatalogServiceImpl(vertx, config(), client);
+        ProxyHelper.registerService(CatalogService.class, vertx, catalogService,
+                "coolstore-catalog-service");
+
+        startFuture.complete();
     }
 
     @Override
